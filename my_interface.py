@@ -50,9 +50,9 @@ def denoise(img, sigma, addNoise=True):
     # look if data are color or grayscale
     H,W,C = img.shape
     if C==3:
-        model_name =  'drunet_gray'
-    else:
         model_name =  'drunet_color'
+    else:
+        model_name =  'drunet_gray'
 
     # load a pre-trained model
     model = net(in_nc=C+1, out_nc=C, nc=[64, 128, 256, 512], nb=4, act_mode='R', downsample_mode="strideconv", upsample_mode="convtranspose")
