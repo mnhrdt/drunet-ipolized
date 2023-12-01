@@ -1,8 +1,4 @@
-import numpy as np
-import torch
-from os.path import join
 
-from models.network_unet import UNetRes as net
 
 def test_onesplit(model, L, refield=32, min_size=256, sf=1, modulo=1):
     '''
@@ -13,6 +9,7 @@ def test_onesplit(model, L, refield=32, min_size=256, sf=1, modulo=1):
     sf: scale factor for super-resolution, otherwise 1
     modulo: 1 if split
     '''
+    import torch
     h, w = L.size()[-2:]
 
     top = slice(0, (h//2//refield+1)*refield)
@@ -39,7 +36,9 @@ def denoise(img, sigma, addNoise=True):
 
     return: numpy array (H,W,1) for grayscale or (H,W,3) for RGB data. Range is [0,255]
     """
-    
+
+    import torch
+    from models.network_unet import UNetRes
 
     # select device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -55,8 +54,8 @@ def denoise(img, sigma, addNoise=True):
         model_name =  'drunet_gray'
 
     # load a pre-trained model
-    model = net(in_nc=C+1, out_nc=C, nc=[64, 128, 256, 512], nb=4, act_mode='R', downsample_mode="strideconv", upsample_mode="convtranspose")
-   # model.load_state_dict(torch.load(join('model_zoo', model_name+'.pth')), strict=True)
+    model = UNetRes(in_nc=C+1, out_nc=C, nc=[64, 128, 256, 512], nb=4, act_mode='R', downsample_mode="strideconv", upsample_mode="convtranspose")
+    model.load_state_dict(torch.load(f'model_zoo/{model_name}.pth'), strict=True)
     model.to(device)
     model.eval()
 
@@ -67,6 +66,7 @@ def denoise(img, sigma, addNoise=True):
     # add noise
     #np.random.seed(2023)  # only if needed (for reproducibility for instance)
     if addNoise:
+        import numpy as np
         noisy = img + np.random.normal(0, sigma/255, img.shape)
     else:
         noisy = img.copy()
