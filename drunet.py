@@ -28,11 +28,10 @@ def test_onesplit(model, L, refield=32, min_size=256, sf=1, modulo=1):
 
 
 
-def denoise(img, sigma, addNoise=True):
+def denoise(img, sigma):
     """
     img: numpy array (H,W,1) if grayscale or (H,W,3) if RGB data, in [0,255] range
     sigma: std value (for image in [0,255] range) to corrupt the clean data with AWGN.
-    addNoise: controls if we add noise or not.
 
     return: numpy array (H,W,1) for grayscale or (H,W,3) for RGB data. Range is [0,255]
     """
@@ -63,20 +62,14 @@ def denoise(img, sigma, addNoise=True):
     for k, v in model.named_parameters():
         v.requires_grad = False
 
-    # add noise
-    #np.random.seed(2023)  # only if needed (for reproducibility for instance)
-    if addNoise:
-        import numpy as np
-        noisy = img + np.random.normal(0, sigma/255, img.shape)
-    else:
-        noisy = img.copy()
+    noisy = img.copy()
 
     # put noisy as a torch tensor of shape B=1,C,H,W
     noisy = torch.Tensor(noisy.transpose(2,0,1)).unsqueeze(0)
 
     # concatenate a scalar noise map and put into device
     noisy_input = torch.cat((noisy, torch.Tensor([sigma/255]).repeat(1, 1, H, W)), dim=1).to(device)
-   
+
     # evaluate the network
     with torch.no_grad():
         if H//8 == 0 and W//8==0:
