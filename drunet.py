@@ -49,9 +49,13 @@ def denoise(img, sigma):
 	else:
 		model_name = 'drunet_gray'
 
+	# absolute path to the model file
+	from os.path import abspath, dirname
+	M = f"{abspath(dirname(abspath(__file__)))}/model_zoo/{model_name}.pth"
+
 	# load a pre-trained model
 	model = UNetRes(in_nc=C+1, out_nc=C, nc=[64, 128, 256, 512], nb=4, act_mode='R', downsample_mode="strideconv", upsample_mode="convtranspose")
-	model.load_state_dict(torch.load(f'model_zoo/{model_name}.pth'), strict=True)
+	model.load_state_dict(torch.load(M), strict=True)
 	model.to(device)
 	model.eval()
 
