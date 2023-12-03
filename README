@@ -11,6 +11,8 @@ The weights of the model can be downloaded by the script provided on the
 
 NOTE: this interface is used mainly by ipol.py:
 
-	!pip install ipol
+	!pip install clipol
 	import ipol
 	y = ipol.drunet(x, 10)
+
+The code of clipol available here: https://git.sr.ht/~coco/clipol
