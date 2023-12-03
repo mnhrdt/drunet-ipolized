@@ -1,4 +1,10 @@
 This is a copy of the original Drunet code with a simple python wrapper writen
-by Valéry Dewil.
+by Valéry Dewil.  It provides a single function "denoise" that is used thus:
+
+	import drunet
+	y = drunet.denoise(x, 10)
 
 The original drunet code is taken from here: https://github.com/cszn/DPIR
+
+The weights of the model can be downloaded by the script provided on the
+"model_zoo" folder.
