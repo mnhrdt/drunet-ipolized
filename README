@@ -8,3 +8,9 @@ The original drunet code is taken from here: https://github.com/cszn/DPIR
 
 The weights of the model can be downloaded by the script provided on the
 "model_zoo" folder.
+
+NOTE: this interface is used mainly by ipol.py:
+
+	!pip install ipol
+	import ipol
+	y = ipol.drunet(x, 10)
